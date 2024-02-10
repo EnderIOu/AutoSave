@@ -1,0 +1,2 @@
+// we are not a normal mod, so we should not generate mcmod.info or pack.mcmeta
+project.gradle.startParameter.excludedTaskNames.add("generateAssets")
