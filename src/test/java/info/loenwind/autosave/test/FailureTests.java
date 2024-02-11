@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,147 +17,171 @@ import info.loenwind.autosave.annotations.Factory;
 import info.loenwind.autosave.annotations.Storable;
 import info.loenwind.autosave.annotations.Store;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class FailureTests {
-  
-  private class Unknown {}
-  
-  private class BadField {
-    
-    private @Store Unknown invalid = new Unknown();
-    
-  }
-  
-  private class BadGeneric {
-    
-    private @Store List<Unknown> invalid = new ArrayList<>();
-    
-  }
-  
-  private class RawTypes {
-    
-    @SuppressWarnings("rawtypes")
-    private @Store List rawtyped = new ArrayList<>();
-    
-  }
-  
-  @Storable
-  private static class DoubleFactory {
-    
-    @Factory
-    public static DoubleFactory factoryA() { return new DoubleFactory(); }
-    
-    @Factory
-    public static DoubleFactory factoryB() { return new DoubleFactory(); }
-  }
-  
-  @Storable
-  private static class DoubleFactoryCtor {
-    
-    @Factory public static DoubleFactoryCtor factory() { return new DoubleFactoryCtor(); }
-    
-    @Factory DoubleFactoryCtor() {}
-    
-  }
-  
-  private static class InvalidFactoryParams {
-    
-    @Factory public static InvalidFactoryParams factory(String parameter) { return new InvalidFactoryParams(); }
-    
-  }
-  
-  private static class InvalidFactoryReturn {
-    
-    @Factory public static Object factory() { return new InvalidFactoryReturn(); }
-    
-  }
-    
-  private void testFails(@Nonnull Object toWrite) {
-    try {
-      Writer.write(new NBTTagCompound(), toWrite);
-    } catch (RuntimeException e) {
-      if (e.getCause() instanceof NoHandlerFoundException) {
-        return;
-      }
-    }
-    Assertions.fail(toWrite.getClass().getSimpleName() + " saved successfully.");
-  }
-  
-  @Test
-  public void testNoHandler() {
-    testFails(new BadField());
-  }
-  
-  @Test
-  public void testNoGenericHandler() {
-    testFails(new BadGeneric());
-  }
-  
-  @Test
-  public void testRawType() {
-    testFails(new RawTypes());
-  }
 
-  @Test
-  public void testMissingFactory() {
+    private class Unknown {}
+
+    private class BadField {
+
+        private @Store Unknown invalid = new Unknown();
+    }
+
+    private class BadGeneric {
+
+        private @Store List<Unknown> invalid = new ArrayList<>();
+    }
+
+    private class RawTypes {
+
+        @SuppressWarnings("rawtypes")
+        private @Store List rawtyped = new ArrayList<>();
+    }
+
     @Storable
-    class NoFactory { 
-      public NoFactory(String unused) {}
+    private static class DoubleFactory {
+
+        @Factory
+        public static DoubleFactory factoryA() {
+            return new DoubleFactory();
+        }
+
+        @Factory
+        public static DoubleFactory factoryB() {
+            return new DoubleFactory();
+        }
     }
-    class Holder {
-      @Store
-      private NoFactory noFactory;
+
+    @Storable
+    private static class DoubleFactoryCtor {
+
+        @Factory
+        public static DoubleFactoryCtor factory() {
+            return new DoubleFactoryCtor();
+        }
+
+        @Factory
+        DoubleFactoryCtor() {}
     }
-    
-    NBTTagCompound tag = new NBTTagCompound();
-    Holder toWrite = new Holder();
-    toWrite.noFactory = new NoFactory("foo");
-    Writer.write(tag, toWrite);
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Reader.read(tag, new Holder()));
-  }
-  
-  @Test
-  public void testDoubleFactory() {    
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Writer.write(new NBTTagCompound(), new DoubleFactory()));
-  }
-  
-  @Test
-  public void testDoubleFactoryCtor() {    
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Writer.write(new NBTTagCompound(), new DoubleFactoryCtor()));
-  }
-  
-  @Test
-  public void testInvalidFactoryParams() {    
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Writer.write(new NBTTagCompound(), new InvalidFactoryParams()));
-  }
-  
-  @Test
-  public void testInvalidFactoryCtorParams() {
-    class InvalidFactoryCtorParams {
-      @Factory InvalidFactoryCtorParams(String parameter) {}
+
+    private static class InvalidFactoryParams {
+
+        @Factory
+        public static InvalidFactoryParams factory(String parameter) {
+            return new InvalidFactoryParams();
+        }
     }
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Writer.write(new NBTTagCompound(), new InvalidFactoryCtorParams("foo")));
-  }
-  
-  @Test
-  public void testInvalidFactoryReturn() {    
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Writer.write(new NBTTagCompound(), new InvalidFactoryReturn()));
-  }
-  
-  @Test
-  public void testInvalidAfterReadParams() {
-    class InvalidAfterReadParams {
-      @AfterRead public void onRead(String unused) {}
+
+    private static class InvalidFactoryReturn {
+
+        @Factory
+        public static Object factory() {
+            return new InvalidFactoryReturn();
+        }
     }
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Writer.write(new NBTTagCompound(), new InvalidAfterReadParams()));
-  }
-  
-  @Test
-  public void testInvalidAfterReadReturn() {
-    class InvalidAfterReadReturn {
-      @AfterRead public InvalidAfterReadReturn onRead() { return this; }
+
+    private void testFails(@Nonnull Object toWrite) {
+        try {
+            Writer.write(new NBTTagCompound(), toWrite);
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof NoHandlerFoundException) {
+                return;
+            }
+        }
+        Assertions.fail(toWrite.getClass().getSimpleName() + " saved successfully.");
     }
-    Assertions.assertThrows(IllegalArgumentException.class, () -> Writer.write(new NBTTagCompound(), new InvalidAfterReadReturn()));
-  }
+
+    @Test
+    public void testNoHandler() {
+        testFails(new BadField());
+    }
+
+    @Test
+    public void testNoGenericHandler() {
+        testFails(new BadGeneric());
+    }
+
+    @Test
+    public void testRawType() {
+        testFails(new RawTypes());
+    }
+
+    @Test
+    public void testMissingFactory() {
+        @Storable
+        class NoFactory {
+
+            public NoFactory(String unused) {}
+        }
+        class Holder {
+
+            @Store
+            private NoFactory noFactory;
+        }
+
+        NBTTagCompound tag = new NBTTagCompound();
+        Holder toWrite = new Holder();
+        toWrite.noFactory = new NoFactory("foo");
+        Writer.write(tag, toWrite);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Reader.read(tag, new Holder()));
+    }
+
+    @Test
+    public void testDoubleFactory() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Writer.write(new NBTTagCompound(), new DoubleFactory()));
+    }
+
+    @Test
+    public void testDoubleFactoryCtor() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Writer.write(new NBTTagCompound(), new DoubleFactoryCtor()));
+    }
+
+    @Test
+    public void testInvalidFactoryParams() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Writer.write(new NBTTagCompound(), new InvalidFactoryParams()));
+    }
+
+    @Test
+    public void testInvalidFactoryCtorParams() {
+        class InvalidFactoryCtorParams {
+
+            @Factory
+            InvalidFactoryCtorParams(String parameter) {}
+        }
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Writer.write(new NBTTagCompound(), new InvalidFactoryCtorParams("foo")));
+    }
+
+    @Test
+    public void testInvalidFactoryReturn() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Writer.write(new NBTTagCompound(), new InvalidFactoryReturn()));
+    }
+
+    @Test
+    public void testInvalidAfterReadParams() {
+        class InvalidAfterReadParams {
+
+            @AfterRead
+            public void onRead(String unused) {}
+        }
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Writer.write(new NBTTagCompound(), new InvalidAfterReadParams()));
+    }
+
+    @Test
+    public void testInvalidAfterReadReturn() {
+        class InvalidAfterReadReturn {
+
+            @AfterRead
+            public InvalidAfterReadReturn onRead() {
+                return this;
+            }
+        }
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Writer.write(new NBTTagCompound(), new InvalidAfterReadReturn()));
+    }
 }

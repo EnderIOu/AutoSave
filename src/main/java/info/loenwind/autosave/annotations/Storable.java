@@ -33,7 +33,5 @@ import info.loenwind.autosave.handlers.internal.HandleStorable;
 @Target(ElementType.TYPE)
 public @interface Storable {
 
-  @SuppressWarnings("rawtypes")
-  public Class<? extends IHandler> handler() default HandleStorable.class;
-
+    Class<? extends IHandler> handler() default HandleStorable.class;
 }

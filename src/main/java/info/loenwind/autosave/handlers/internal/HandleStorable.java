@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.annotations.Storable;
 import info.loenwind.autosave.annotations.Store;
@@ -14,7 +16,6 @@ import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
 import info.loenwind.autosave.util.NullHelper;
 import info.loenwind.autosave.util.TypeUtil;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * An {@link IHandler} that can (re-)store objects by storing their fields. The
@@ -33,37 +34,41 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @param <T>
  */
-public class HandleStorable<T extends Object> implements IHandler<T> {
+public class HandleStorable<T> implements IHandler<T> {
 
-  public HandleStorable() {
-  }
+    public HandleStorable() {}
 
-  @Override
-  public @Nullable IHandler<T> getHandler(Registry registry, Type type) {
-    Class<?> clazz = TypeUtil.toClass(type);
-    Storable annotation = clazz.getAnnotation(Storable.class);
-    return annotation != null && annotation.handler() == this.getClass() ? this : null;
-  }
-
-  @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type, String name, T object)
-      throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    NBTTagCompound tag = new NBTTagCompound();
-    StorableEngine.store(registry, phase, tag, object);
-    nbt.setTag(name, tag);
-    return true;
-  }
-
-  @Override
-  public @Nullable T read(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type, String name, @Nullable T object)
-      throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    if (nbt.hasKey(name)) {
-      if (object == null) {
-        object = StorableEngine.instantiate(registry, type);
-      }
-      NBTTagCompound tag = NullHelper.notnullM(nbt.getCompoundTag(name), "NBTTagCompound.getCompoundTag()");
-      StorableEngine.read(registry, phase, tag, object);
+    @Override
+    public @Nullable IHandler<T> getHandler(Registry registry, Type type) {
+        Class<?> clazz = TypeUtil.toClass(type);
+        Storable annotation = clazz.getAnnotation(Storable.class);
+        return annotation != null && annotation.handler() == this.getClass() ? this : null;
     }
-    return object;
-  }
+
+    @Override
+    public boolean store(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type, String name, T object)
+                                                                                                                        throws IllegalArgumentException,
+                                                                                                                        IllegalAccessException,
+                                                                                                                        InstantiationException,
+                                                                                                                        NoHandlerFoundException {
+        NBTTagCompound tag = new NBTTagCompound();
+        StorableEngine.store(registry, phase, tag, object);
+        nbt.setTag(name, tag);
+        return true;
+    }
+
+    @Override
+    public @Nullable T read(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type, String name,
+                            @Nullable T object)
+                                                throws IllegalArgumentException, IllegalAccessException,
+                                                InstantiationException, NoHandlerFoundException {
+        if (nbt.hasKey(name)) {
+            if (object == null) {
+                object = StorableEngine.instantiate(registry, type);
+            }
+            NBTTagCompound tag = NullHelper.notnullM(nbt.getCompoundTag(name), "NBTTagCompound.getCompoundTag()");
+            StorableEngine.read(registry, phase, tag, object);
+        }
+        return object;
+    }
 }

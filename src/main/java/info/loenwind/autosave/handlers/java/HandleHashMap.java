@@ -12,27 +12,27 @@ import info.loenwind.autosave.util.TypeUtil;
 
 @SuppressWarnings("rawtypes")
 public class HandleHashMap extends HandleMap<HashMap> {
-  
-  public HandleHashMap() {
-    super(HashMap.class);
-  }
 
-  protected HandleHashMap(Registry registry, Type... types) throws NoHandlerFoundException {
-    super(HashMap.class, registry, types);
-  }
+    public HandleHashMap() {
+        super(HashMap.class);
+    }
 
-  @Override
-  protected HashMap createMap() {
-    return new HashMap();
-  }
+    protected HandleHashMap(Registry registry, Type... types) throws NoHandlerFoundException {
+        super(HashMap.class, registry, types);
+    }
 
-  @Override
-  protected IHandler<? extends HashMap> create(Registry registry, Type... types) throws NoHandlerFoundException {
-    return new HandleHashMap(registry, types);
-  }
+    @Override
+    protected HashMap createMap() {
+        return new HashMap();
+    }
 
-  @Override
-  protected boolean canHandle(Type type) {
-    return TypeUtil.toClass(type) == Map.class || super.canHandle(type);
-  }
+    @Override
+    protected IHandler<? extends HashMap> create(Registry registry, Type... types) throws NoHandlerFoundException {
+        return new HandleHashMap(registry, types);
+    }
+
+    @Override
+    protected boolean canHandle(Type type) {
+        return TypeUtil.toClass(type) == Map.class || super.canHandle(type);
+    }
 }

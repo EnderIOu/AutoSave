@@ -12,28 +12,27 @@ import info.loenwind.autosave.util.TypeUtil;
 
 @SuppressWarnings("rawtypes")
 public class HandleHashSet extends HandleCollection<HashSet> {
-  
-  public HandleHashSet() {
-    super(HashSet.class);
-  }
 
-  protected HandleHashSet(Registry registry, Type... types) throws NoHandlerFoundException {
-    super(HashSet.class, registry, types);
-  }
-  
-  @Override
-  protected HashSet makeCollection() {
-    return new HashSet();
-  }
-  
-  @Override
-  protected boolean canHandle(Type type) {
-    return TypeUtil.toClass(type) == Set.class || super.canHandle(type);
-  }
+    public HandleHashSet() {
+        super(HashSet.class);
+    }
 
-  @Override
-  protected IHandler<? extends HashSet> create(Registry registry, Type... types) throws NoHandlerFoundException {
-    return new HandleHashSet(registry, types);
-  }
+    protected HandleHashSet(Registry registry, Type... types) throws NoHandlerFoundException {
+        super(HashSet.class, registry, types);
+    }
 
+    @Override
+    protected HashSet makeCollection() {
+        return new HashSet();
+    }
+
+    @Override
+    protected boolean canHandle(Type type) {
+        return TypeUtil.toClass(type) == Set.class || super.canHandle(type);
+    }
+
+    @Override
+    protected IHandler<? extends HashSet> create(Registry registry, Type... types) throws NoHandlerFoundException {
+        return new HandleHashSet(registry, types);
+    }
 }

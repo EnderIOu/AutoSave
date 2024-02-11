@@ -5,11 +5,12 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * A dummy {@link IHandler} that is used as default value for fields. It will be
@@ -23,20 +24,22 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class NullHandler implements IHandler<NullHandler> {
 
-  private NullHandler() {
-  }
+    private NullHandler() {}
 
-  @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type, String name,
-      NullHandler object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    return false;
-  }
+    @Override
+    public boolean store(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type, String name,
+                         NullHandler object) throws IllegalArgumentException, IllegalAccessException,
+                                             InstantiationException, NoHandlerFoundException {
+        return false;
+    }
 
-  @Override
-  public @Nullable NullHandler read(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type,
-      String name, @Nullable NullHandler object)
-      throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    return null;
-  }
-
+    @Override
+    public @Nullable NullHandler read(Registry registry, Set<NBTAction> phase, NBTTagCompound nbt, Type type,
+                                      String name, @Nullable NullHandler object)
+                                                                                 throws IllegalArgumentException,
+                                                                                 IllegalAccessException,
+                                                                                 InstantiationException,
+                                                                                 NoHandlerFoundException {
+        return null;
+    }
 }

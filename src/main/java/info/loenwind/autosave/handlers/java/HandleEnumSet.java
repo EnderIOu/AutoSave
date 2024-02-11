@@ -12,23 +12,23 @@ import info.loenwind.autosave.util.TypeUtil;
 
 @SuppressWarnings("rawtypes")
 public class HandleEnumSet extends HandleCollection<EnumSet> {
-  
-  public HandleEnumSet() {
-    super(EnumSet.class);
-  }
 
-  protected HandleEnumSet(Registry registry, Type... types) throws NoHandlerFoundException {
-    super(EnumSet.class, registry, types);
-  }
+    public HandleEnumSet() {
+        super(EnumSet.class);
+    }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  protected EnumSet makeCollection() {
-    return NullHelper.notnullJ(EnumSet.noneOf((Class<Enum>) TypeUtil.toClass(types[0])), "EnumSet.noneOf");
-  }
+    protected HandleEnumSet(Registry registry, Type... types) throws NoHandlerFoundException {
+        super(EnumSet.class, registry, types);
+    }
 
-  @Override
-  protected IHandler<? extends EnumSet> create(Registry registry, Type... types) throws NoHandlerFoundException {
-    return new HandleEnumSet(registry, types);
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    protected EnumSet makeCollection() {
+        return NullHelper.notnullJ(EnumSet.noneOf((Class<Enum>) TypeUtil.toClass(types[0])), "EnumSet.noneOf");
+    }
+
+    @Override
+    protected IHandler<? extends EnumSet> create(Registry registry, Type... types) throws NoHandlerFoundException {
+        return new HandleEnumSet(registry, types);
+    }
 }

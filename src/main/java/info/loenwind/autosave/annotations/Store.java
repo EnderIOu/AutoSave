@@ -25,10 +25,9 @@ import info.loenwind.autosave.util.NBTAction;
 @Target(ElementType.FIELD)
 public @interface Store {
 
-  // Note: @Inherit does not work on fields. HandleStorable has special code to handle that.
+    // Note: @Inherit does not work on fields. HandleStorable has special code to handle that.
 
-  public NBTAction[] value() default { NBTAction.SAVE, NBTAction.CLIENT, NBTAction.ITEM };
+    NBTAction[] value() default { NBTAction.SAVE, NBTAction.CLIENT, NBTAction.ITEM };
 
-  @SuppressWarnings("rawtypes")
-  public Class<? extends IHandler> handler() default NullHandler.class;
+    Class<? extends IHandler> handler() default NullHandler.class;
 }
